@@ -6,6 +6,10 @@ body {
     display: flex;
     flex-direction: column;
 
+    h1 {
+        text-align: center;
+    }
+
     .logo {
         padding: 1em;
         align-self: center;
@@ -45,6 +49,9 @@ body {
 
     @media (min-width: 576px) {
         flex-direction: row;
+        h1 {
+            text-align: left;
+        }
         .logo {
             align-self: flex-start;
         }

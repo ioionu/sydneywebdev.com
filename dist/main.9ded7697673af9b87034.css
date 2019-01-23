@@ -5,6 +5,8 @@ body {
 .wrapper {
   display: flex;
   flex-direction: column; }
+  .wrapper h1 {
+    text-align: center; }
   .wrapper .logo {
     padding: 1em;
     align-self: center; }
@@ -32,6 +34,8 @@ body {
   @media (min-width: 576px) {
     .wrapper {
       flex-direction: row; }
+      .wrapper h1 {
+        text-align: left; }
       .wrapper .logo {
         align-self: flex-start; } }
 
