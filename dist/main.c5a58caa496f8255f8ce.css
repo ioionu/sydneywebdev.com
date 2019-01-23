@@ -1,0 +1,37 @@
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: wheat; }
+
+.wrapper {
+  display: flex;
+  flex-direction: column; }
+  .wrapper .logo {
+    padding: 1em;
+    align-self: center; }
+    .wrapper .logo .inner {
+      display: flex;
+      width: 10em;
+      height: 10em;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      border-radius: 100%;
+      flex-grow: 0; }
+  .wrapper .social {
+    font-size: 2em; }
+    .wrapper .social a {
+      text-decoration: none; }
+  .wrapper a:link {
+    color: gray; }
+  .wrapper a:visited {
+    color: gray; }
+  .wrapper a:hover, .wrapper a:active {
+    color: black; }
+  .wrapper .gray {
+    color: gray; }
+  @media (min-width: 576px) {
+    .wrapper {
+      flex-direction: row; }
+      .wrapper .logo {
+        align-self: flex-start; } }
+

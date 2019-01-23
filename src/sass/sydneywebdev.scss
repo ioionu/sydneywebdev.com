@@ -1,21 +1,23 @@
 body {
     font-family: 'Quicksand', sans-serif;
     background: wheat;
-    .wrapper {
-        display: flex;
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
 
-        .logo {
-            padding: 1em;
-            .inner {
-                display: flex;
-                width: 10em;
-                height: 10em;
-                justify-content: center;
-                align-items: center;
-                background: white;
-                border-radius: 100%;
-                flex-grow: 0;
-            }
+    .logo {
+        padding: 1em;
+        align-self: center;
+        .inner {
+            display: flex;
+            width: 10em;
+            height: 10em;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 100%;
+            flex-grow: 0;
         }
     }
     .social {
@@ -36,7 +38,15 @@ body {
             color: black;
         }
     }
-}
-.gray {
-    color: gray;
+
+    .gray {
+        color: gray;
+    }
+
+    @media (min-width: 576px) {
+        flex-direction: row;
+        .logo {
+            align-self: flex-start;
+        }
+    }
 }
