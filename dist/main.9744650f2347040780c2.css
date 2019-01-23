@@ -1,0 +1,30 @@
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: wheat; }
+  body .wrapper {
+    display: flex; }
+    body .wrapper .logo {
+      padding: 1em; }
+      body .wrapper .logo .inner {
+        display: flex;
+        width: 10em;
+        height: 10em;
+        justify-content: center;
+        align-items: center;
+        background: white;
+        border-radius: 100%;
+        flex-grow: 0; }
+  body .social {
+    font-size: 2em; }
+    body .social a {
+      text-decoration: none; }
+  body a:link {
+    color: gray; }
+  body a:visited {
+    color: gray; }
+  body a:hover, body a:active {
+    color: black; }
+
+.gray {
+  color: gray; }
+
