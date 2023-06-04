@@ -8,6 +8,21 @@ body {
     margin: 0;
 }
 
+#bg {
+    animation: animateBg 10s linear infinite;
+    background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#def2a0,#c6ee4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
+    background-size: 100% 1100%;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+@keyframes animateBg {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
 #canvas {
     position: fixed;
     left: 0;
@@ -15,11 +30,34 @@ body {
     width: 100%;
     height: 100%;
     image-rendering: pixelated; image-rendering: crisp-edges;
+    z-index: 2;
+}
+
+#card {
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    pointer-events:none;
+}
+
+#card .inner {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 2em;
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 #ctrl {
     position: absolute;
     z-index: 10;
+}
+
+a:link, a:visited {
+    color: wheat;
 }
         </style>
         <script>
@@ -27,10 +65,9 @@ body {
 class life {
     populationSeed = 0.4;
     brushWidth = 10;
-    dead = "pink";
-    living = "purple";
-    epoch = 10;
-    elapsed = 0;
+    dead = "rgba(0,0,0,1)";
+    living = "rgba(0,0,0,0)";
+    epoch = 75;
     maxGenerations = 5;
     
     constructor() {
@@ -45,14 +82,12 @@ class life {
             (event) => this.mouseHandler(event)
         );
 
-        window.requestAnimationFrame(
-            (timeStamp) => {
-                console.log(timeStamp)
+        this.seed();
+
+        window.setInterval(() => {
             this.frame();
             this.render();
-        }
-        );
-        // window.setInterval(, this.epoch);
+        }, this.epoch);
     }
 
     mouseHandler() {
@@ -88,10 +123,10 @@ class life {
         console.log("seeded", this.data);
     }
     render() {
-        // console.log(this.data);
+        this.ctx.clearRect(0, 0, this.width, this.height);
         for(let x = 0; x < this.width; x++) {
             for(let y = 0; y < this.height; y++) {
-                this.ctx.fillStyle = this.data[this.data.length-1][x][y] ? this.dead : this.living;
+                this.ctx.fillStyle = this.data[this.data.length-1][x][y] ? this.living : this.dead;
                 this.ctx.fillRect(x, y, 1, 1);
             }
         }
@@ -152,20 +187,12 @@ class life {
         }
         this.data.push(generation);
         this.data = this.data.slice(this.data.length-this.maxGenerations, this.data.length);
-        this.render();
-        window.requestAnimationFrame(()=>this.frame());
     }
 }
 
 const go = () => {
     const l = new life();
-    l.seed();
-    l.render();
-    document.getElementById("seed").addEventListener("click", () => l.seed());
-    document.getElementById("render").addEventListener("click", () => l.render());
-    document.getElementById("frame").addEventListener("click", () => l.frame());
 };
-
 
 if (document.readyState !== 'loading') {
     go();
@@ -175,10 +202,18 @@ if (document.readyState !== 'loading') {
     </script>
     </head>
     <body>
-        <div id="ctrl">
-            <button id="seed">Seed</button>
-            <button id="frame">Frame</button>
-            <button id="render">Render</button>
+        <div id="bg" />
+        <div id="card">
+            <div class="inner">
+                <p>hi!</p>
+                <p>my name is josh.</p>
+                <p>i'm into pyhton, javascript, linux, bikes, skating and swimming.</p>
+                <p>let me know if there is anything i can help with.</p>
+                <ul>
+                    <li><a href="https://www.linkedin.com/in/joshuamccluskey/" target="_blank">linkedin</a></li>
+                    <li><a href="https://github.com/ioionu/" target="_blank">github</a></li>
+                </ul>
+            </div>
         </div>
         <canvas id="canvas" width="100" height="100"></canvas>
     </body>
