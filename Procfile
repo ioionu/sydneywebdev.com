@@ -5,4 +5,4 @@
 # cron: */5 * * * * python batch.py
 # somepyworker: python somescript.py
 # somenodeworker: node somescript.js
-worker: static
+static: /
