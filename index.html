@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>sydneywebdev.com</title>
         <style type="text/css">
 body {
@@ -35,32 +36,24 @@ body {
 
 #card {
     position: absolute;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    pointer-events:none;
+    z-index: 4;
+    padding: 1em;
 }
 
 #card .inner {
     background-color: rgba(0, 0, 0, 0.75);
+    border: 2px solid black;
     padding: 2em;
     color: white;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-#ctrl {
-    position: absolute;
-    z-index: 10;
-}
-
 a:link, a:visited {
     color: wheat;
 }
-        </style>
-        <script>
+
+</style>
+<script>
 
 class life {
     populationSeed = 0.4;
@@ -79,7 +72,17 @@ class life {
 
         canvas.addEventListener(
             "mousemove",
-            (event) => this.mouseHandler(event)
+            (event) => this.mouseHandler(event.clientX, event.clientY)
+        );
+
+        canvas.addEventListener(
+            "touchstart",
+            (event) => this.mouseHandler(event.touches[0].clientX, event.touches[0].clientY)
+        );
+
+        canvas.addEventListener(
+            "touchmove",
+            (event) => this.mouseHandler(event.touches[0].clientX, event.touches[0].clientY)
         );
 
         this.seed();
@@ -90,9 +93,9 @@ class life {
         }, this.epoch);
     }
 
-    mouseHandler() {
-        const x = Math.floor(event.clientX / this.canvas.clientWidth * this.width);
-        const y = Math.floor(event.clientY / this.canvas.clientHeight * this.height);
+    mouseHandler(eventX, eventY) {
+        const x = Math.floor(eventX / this.canvas.clientWidth * this.width);
+        const y = Math.floor(eventY / this.canvas.clientHeight * this.height);
         
         for(let i = 0; i < this.brushWidth; i++) {
             for(let j = 0; j < this.brushWidth; j++) {
@@ -122,6 +125,7 @@ class life {
         this.data.push(generation)
         console.log("seeded", this.data);
     }
+
     render() {
         this.ctx.clearRect(0, 0, this.width, this.height);
         for(let x = 0; x < this.width; x++) {
@@ -160,23 +164,29 @@ class life {
                 n = (this.data[this.data.length-1][neighbour.x][neighbour.y] === true) ? n+1 : n;
             }
         }
-        const alive = this.data[this.data.length-1][x][y];
-        // If dead with 3n -> birth 
-        if (!alive && n === 3) {
-            return true;
+        try {
+            const alive = this.data[this.data.length-1][x][y];
+            // If dead with 3n -> birth 
+            if (!alive && n === 3) {
+                return true;
+            }
+            // If alive with 2 or 3n -> alive
+            else if (alive && (n === 2 || n === 3)) {
+                return true;
+            }
         }
-        // If alive with 2 or 3n -> alive
-        else if (alive && (n === 2 || n === 3)) {
-            return true;
+        catch(e) {
+            console.log("wtf", e);
         }
         // Else die.
         return false;
-    };
+    }
+
     frame(timeStamp) {
         const generation = this.emptyGeneration();
         let population = 0;
-        for(let y = 0; y < this.width; y++) {
-            for(let x = 0; x < this.height; x++) {
+        for(let y = 0; y < this.height; y++) {
+            for(let x = 0; x < this.width; x++) {
                 let lives = this.judge(x,y);
                 population = lives ? population+1 : population;
                 generation[x][y] = lives;
@@ -191,6 +201,11 @@ class life {
 }
 
 const go = () => {
+    const canvas = document.createElement("canvas");
+    canvas.setAttribute("id", "canvas");
+    canvas.setAttribute("width", 100);
+    canvas.setAttribute("height", Math.floor(window.document.documentElement.clientHeight / window.document.documentElement.clientWidth * 100));
+    document.getElementsByTagName("body")[0].appendChild(canvas);
     const l = new life();
 };
 
@@ -199,15 +214,16 @@ if (document.readyState !== 'loading') {
 } else {
     document.addEventListener('DOMContentLoaded', go);
 }
-    </script>
+
+</script>
     </head>
     <body>
-        <div id="bg" />
+        <div id="bg"></div>
         <div id="card">
             <div class="inner">
-                <p>hi!</p>
+                <p>hi (´･ᴗ･ ` )ノ</p>
                 <p>my name is josh.</p>
-                <p>i'm into pyhton, javascript, linux, bikes, skating and swimming.</p>
+                <p>i'm into python, javascript, linux, bikes and swimming.</p>
                 <p>let me know if there is anything i can help with.</p>
                 <ul>
                     <li><a href="https://www.linkedin.com/in/joshuamccluskey/" target="_blank">linkedin</a></li>
@@ -215,6 +231,5 @@ if (document.readyState !== 'loading') {
                 </ul>
             </div>
         </div>
-        <canvas id="canvas" width="100" height="100"></canvas>
     </body>
 </html>
