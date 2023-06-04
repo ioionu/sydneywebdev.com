@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>sydneywebdev.com</title>
+        <style type="text/css">
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#canvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+}
+
+#ctrl {
+    position: absolute;
+    z-index: 10;
+}
+        </style>
+        <script>
+
+class life {
+    populationSeed = 0.4;
+    brushWidth = 10;
+    dead = "pink";
+    living = "purple";
+    epoch = 10;
+    elapsed = 0;
+    maxGenerations = 5;
+    
+    constructor() {
+        this.canvas = document.getElementById("canvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        this.data = [];
+
+        canvas.addEventListener(
+            "mousemove",
+            (event) => this.mouseHandler(event)
+        );
+
+        window.requestAnimationFrame(
+            (timeStamp) => {
+                console.log(timeStamp)
+            this.frame();
+            this.render();
+        }
+        );
+        // window.setInterval(, this.epoch);
+    }
+
+    mouseHandler() {
+        const x = Math.floor(event.clientX / this.canvas.clientWidth * this.width);
+        const y = Math.floor(event.clientY / this.canvas.clientHeight * this.height);
+        
+        for(let i = 0; i < this.brushWidth; i++) {
+            for(let j = 0; j < this.brushWidth; j++) {
+                const m = this.coord(x+i,y+j);
+                this.data[this.data.length-1][m.x][m.y] = !this.data[this.data.length-1][m.x][m.y];
+            }
+        }
+    }
+
+    emptyGeneration() {
+        const generation = Array(this.width);
+        for (let i = 0; i < generation.length; i++) {
+            generation[i] = Array(this.width);
+        }
+        return generation;
+    }
+
+    seed() {
+        console.log("seeding");
+        this.data = [];
+        const generation = this.emptyGeneration();
+        for(let y = 0; y < this.height; y++) {
+            for(let x = 0; x < this.width; x++) {
+                generation[x][y] = Math.random() > this.populationSeed;
+            }
+        }
+        this.data.push(generation)
+        console.log("seeded", this.data);
+    }
+    render() {
+        // console.log(this.data);
+        for(let x = 0; x < this.width; x++) {
+            for(let y = 0; y < this.height; y++) {
+                this.ctx.fillStyle = this.data[this.data.length-1][x][y] ? this.dead : this.living;
+                this.ctx.fillRect(x, y, 1, 1);
+            }
+        }
+    }
+
+    coord(x,y) {
+        if (x >= this.width) {
+            x = 0
+        }
+        else if (x < 0) {
+            x = this.width-1
+        }
+        
+        if (y >= this.height) {
+            y = 0
+        }
+        else if (y < 0) {
+            y = this.height-1
+        }
+        return {x,y};
+    }
+
+    judge(x,y) {
+        let n = 0;
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++) {
+                if (i === 0 && j === 0) {
+                    continue;
+                }
+                const neighbour = this.coord(x+i, y+j);
+                n = (this.data[this.data.length-1][neighbour.x][neighbour.y] === true) ? n+1 : n;
+            }
+        }
+        const alive = this.data[this.data.length-1][x][y];
+        // If dead with 3n -> birth 
+        if (!alive && n === 3) {
+            return true;
+        }
+        // If alive with 2 or 3n -> alive
+        else if (alive && (n === 2 || n === 3)) {
+            return true;
+        }
+        // Else die.
+        return false;
+    };
+    frame(timeStamp) {
+        const generation = this.emptyGeneration();
+        let population = 0;
+        for(let y = 0; y < this.width; y++) {
+            for(let x = 0; x < this.height; x++) {
+                let lives = this.judge(x,y);
+                population = lives ? population+1 : population;
+                generation[x][y] = lives;
+            }
+        }
+        if (population === 0) {
+            this.seed();
+        }
+        this.data.push(generation);
+        this.data = this.data.slice(this.data.length-this.maxGenerations, this.data.length);
+        this.render();
+        window.requestAnimationFrame(()=>this.frame());
+    }
+}
+
+const go = () => {
+    const l = new life();
+    l.seed();
+    l.render();
+    document.getElementById("seed").addEventListener("click", () => l.seed());
+    document.getElementById("render").addEventListener("click", () => l.render());
+    document.getElementById("frame").addEventListener("click", () => l.frame());
+};
+
+
+if (document.readyState !== 'loading') {
+    go();
+} else {
+    document.addEventListener('DOMContentLoaded', go);
+}
+    </script>
+    </head>
+    <body>
+        <div id="ctrl">
+            <button id="seed">Seed</button>
+            <button id="frame">Frame</button>
+            <button id="render">Render</button>
+        </div>
+        <canvas id="canvas" width="100" height="100"></canvas>
+    </body>
+</html>
