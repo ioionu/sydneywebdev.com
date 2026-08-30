@@ -20,17 +20,11 @@ body {
 
 #bg {
     animation: animateBg 10s linear infinite;
-    background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#def2a0,#c6ee4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
     background-size: 100% 1100%;
     position: absolute;
     width: 100vw;
     height: 100vh;
     z-index: 1;
-}
-
-@keyframes animateBg {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 0% 100%; }
 }
 
 #canvas {
@@ -50,15 +44,19 @@ body {
 }
 
 #card .inner {
-    background-color: rgba(0, 0, 0, 0.75);
-    border: 2px solid black;
+    background-color: rgba(231, 231, 231, 0.95);
     padding: 2em;
-    color: white;
+    color: black;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border: 2px solid #ccc;
+}
+
+h1 {
+    font-size: 1.1em;
 }
 
 a:link, a:visited {
-    color: wheat;
+    color: #494949;
 }
 
 </style>
@@ -67,19 +65,20 @@ a:link, a:visited {
         <div id="bg" tabindex="0"></div>
         <div id="card">
             <div class="inner">
-                <h1>{Sydney : WebDev}</h1>
+                <img src="logo.svg" />
+                <h1>Sydney website development services.</h1>
                 <p>Hi! <span role="img" aria-label="waving" tabindex="0">(´･ᴗ･ ` )ノ</span></p>
                 <p>I'm a experienced Web Developer in Eora Sydney specialising in:</p>
                 <ul>
-                    <li>Python,</li>
-                    <li>PHP,</li> 
-                    <li>JavaScript/React,</li> 
-                    <li>Linux,</li>
-                    <li>Project Management,</li>
-                    <li>DevOps &amp;</li> 
-                    <li>AI integration.</li>
+                    <li>Python</li>
+                    <li>PHP</li> 
+                    <li>JavaScript/React</li> 
+                    <li>Linux</li>
+                    <li>Project Management</li>
+                    <li>DevOps</li> 
+                    <li>AI integration</li>
                 </ul>
-                <p>Let me know if there is anything i can help you with.</p>
+                <p>Let me know if there is anything I can help you with.</p>
                 <ul>
                     <li><a href="https://www.linkedin.com/in/joshuamccluskey/" target="_blank">Linkedin</a></li>
                     <li><a href="https://github.com/ioionu/" target="_blank">GitHub</a></li>
@@ -92,11 +91,21 @@ a:link, a:visited {
         <script>
 
             class life {
-                populationSeed = 0.4;
-                brushWidth = 10;
-                dead = "rgba(0,0,0,1)";
-                living = "rgba(0,0,0,0)";
-                epoch = 75;
+                populationSeed = 0.8;
+                
+                // How many cells to add on mouse over.
+                brushWidth = 3;
+                
+                // Colour of dead cells.
+                dead = "rgba(230,230,230,1)";
+
+                // Colour of living cells.
+                living = "rgba(100,100,100,1)";
+
+                // Generations tick/speed.
+                epoch = 100;
+
+                // Generations to track.
                 maxGenerations = 5;
                 
                 constructor() {
@@ -105,7 +114,23 @@ a:link, a:visited {
                     this.width = this.canvas.width;
                     this.height = this.canvas.height;
                     this.data = [];
-            
+
+                    const tBase = 2
+                    this.ctx.setTransform(
+                        tBase*2,  // horizontal contribution from x
+                        tBase,  // vertical contribution from x
+                        tBase*2*-1,  // horizontal contribution from y
+                        tBase,   // vertical contribution from y
+                        this.width/2,  // screen offset x
+                        this.height/3*2*-1    // screen offset y
+                    );
+
+                    this.isoMatrix = new DOMMatrix([
+                        tBase*2, tBase,
+                        tBase*2*-1, tBase,
+                        this.width/2, this.height/3*2*-1,
+                    ]);
+
                     canvas.addEventListener(
                         "mousemove",
                         (event) => this.mouseHandler(event.clientX, event.clientY)
@@ -132,10 +157,14 @@ a:link, a:visited {
                 mouseHandler(eventX, eventY) {
                     const x = Math.floor(eventX / this.canvas.clientWidth * this.width);
                     const y = Math.floor(eventY / this.canvas.clientHeight * this.height);
-                    
+                    const mouse = new DOMPoint(x,y);
+                    const world = mouse.matrixTransform(this.isoMatrix.inverse());
+                    const ix = Math.floor(world.x);
+                    const iy = Math.floor(world.y);
+                    console.log(x,y, ix, iy)
                     for(let i = 0; i < this.brushWidth; i++) {
                         for(let j = 0; j < this.brushWidth; j++) {
-                            const m = this.coord(x+i,y+j);
+                            const m = this.coord(ix+i,iy+j);
                             this.data[this.data.length-1][m.x][m.y] = !this.data[this.data.length-1][m.x][m.y];
                         }
                     }
@@ -239,8 +268,8 @@ a:link, a:visited {
             const go = () => {
                 const canvas = document.createElement("canvas");
                 canvas.setAttribute("id", "canvas");
-                canvas.setAttribute("width", 128);
-                canvas.setAttribute("height", Math.floor(window.document.documentElement.clientHeight / window.document.documentElement.clientWidth * 100));
+                canvas.setAttribute("width", 256);
+                canvas.setAttribute("height", 256);
                 document.getElementsByTagName("body")[0].appendChild(canvas);
                 const l = new life();
             };
