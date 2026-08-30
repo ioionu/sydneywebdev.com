@@ -58,7 +58,7 @@ a:link, a:visited {
                 <img src="logo.svg" />
                 <h1>Sydney website development services.</h1>
                 <p>Hi! <span role="img" aria-label="waving" tabindex="0">(´･ᴗ･ ` )ノ</span></p>
-                <p>I'm a experienced Web Developer in Eora Sydney specialising in:</p>
+                <p>I’m an experienced web developer in Eora Sydney, specialising in::</p>
                 <ul>
                     <li>Python</li>
                     <li>PHP</li> 
@@ -68,7 +68,7 @@ a:link, a:visited {
                     <li>DevOps</li> 
                     <li>AI integration</li>
                 </ul>
-                <p>Let me know if there is anything I can help you with.</p>
+                <p>Please let me know if there’s anything I can help you with.</p>
                 <ul>
                     <li><a href="https://www.linkedin.com/in/joshuamccluskey/" target="_blank">Linkedin</a></li>
                     <li><a href="https://github.com/ioionu/" target="_blank">GitHub</a></li>
@@ -105,15 +105,17 @@ a:link, a:visited {
                     this.height = this.canvas.height;
                     this.data = [];
 
-                    // Size if cells.
-                    const tBase = 2
+                    // Size of cells.
+                    const tBase = 3;
+
+                    // Isometric transformation.
                     this.ctx.setTransform(
-                        tBase*2,  // horizontal contribution from x
-                        tBase,  // vertical contribution from x
-                        tBase*2*-1,  // horizontal contribution from y
-                        tBase,   // vertical contribution from y
-                        this.width/2,  // screen offset x
-                        this.height/3*2*-1    // screen offset y
+                        tBase*2,
+                        tBase,
+                        tBase*2*-1,
+                        tBase,
+                        this.width/2,
+                        this.height/3*2*-1
                     );
 
                     // Magically transforms mouse location into canvas points.
